@@ -37,12 +37,24 @@ class Comment extends Model
         }
     }
 
-    public static function countCommentsByDays($days) {
-    	$commentsByDays = DB::table('comments')
-            ->select(DB::raw('DATE(created_at) as date, count(*) as count'))
-            ->groupBy('date')
-            ->having('date', '>=', now()->subDays($days)->toDateString())
-            ->get();
+    public static function countCommentsByDays($days) 
+    {
+        $commentLastxDays = Comment::where('created_at', '>=', now()->subDays($days-1))->get('created_at');
+
+        $commentLastxDays = $commentLastxDays->map(function($item) {
+            return ['created_at' => $item->created_at->format('Y-m-d')];
+        })->sortBy('created_at');
+
+        $commentLastxDays = $commentLastxDays->groupBy('created_at');
+
+        $commentsByDays = collect();
+
+        $commentLastxDays->each(function($item, $key) use ($commentsByDays) {
+            $commentsByDays->push([
+                'date' => $key,
+                'count' => $item->count()
+            ]);
+        });
 
         $result = collect();
 
@@ -55,31 +67,32 @@ class Comment extends Model
             $dayInWeek = $day->dayName;
 
             if(!$commentsByDays->contains(function($value, $key) use ($i, $dayDateString, $result, $days, $dayDateFormat, $dayInWeek) {
-                	if($value->date == $dayDateString) {
-                		if($days == 7) {
-                			$result->put($i, [
-	                   			'name' => $dayInWeek, 
-	                   			'count' => $value->count
-	                   		]);
-                		} else {
-                			$result->put($i, [
-	                   			'name' => $dayDateFormat, 
-	                   			'count' => $value->count
-	                   		]);
-                		}
-                   		
+                    if($value['date'] == $dayDateString) {
+                        if($days == 7) {
+                            $result->put($i, [
+                                'name' => $dayInWeek, 
+                                'count' => $value['count']
+                            ]);
+                        } else {
+                            $result->put($i, [
+                                'name' => $dayDateFormat, 
+                                'count' => $value['count']
+                            ]);
+                        }
+                        
 
-                    	return $value->date == $dayDateString;
-                	}
-            	})) 
+                        return $value['date'] == $dayDateString;
+                    }
+                })) 
             {
                 $result->put($i, [
-                   			'name' => $dayDateString, 
-                   			'count' => 0
-                   		]);
+                            'name' => $dayDateString, 
+                            'count' => 0
+                        ]);
             }
 
         }
+
         return $result->reverse();
     }
 
