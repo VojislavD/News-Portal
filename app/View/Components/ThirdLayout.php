@@ -17,7 +17,7 @@ class ThirdLayout extends Component
      */
     public function __construct()
     {
-        $articles = Article::latest()->take(5)->get();
+        $articles = Article::with('user')->latest()->take(5)->get();
 
         $this->mostPopularArticle = $articles->first();
         $this->popularArticles = $articles->take(-4);

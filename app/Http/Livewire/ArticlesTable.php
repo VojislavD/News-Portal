@@ -28,25 +28,25 @@ class ArticlesTable extends Component
     public function getArticlesSorted($sortBy) {
     	switch ($sortBy) {
     		case 'created':
-    			return Article::paginate(10);
+    			return Article::with('user','comments','category')->paginate(10);
     		break;
     		case 'created_desc':
-				return Article::latest()->paginate(10);
+				return Article::with('user','comments','category')->latest()->paginate(10);
     		break;
     		case 'views':
-    			return Article::orderBy('views')->paginate(10);
+    			return Article::with('user','comments','category')->orderBy('views')->paginate(10);
     		break;
     		case 'views_desc':
-				return Article::orderByDesc('views')->paginate(10);
+				return Article::with('user','comments','category')->orderByDesc('views')->paginate(10);
     		break;
     		case 'comments':
-    			return Article::withCount('comments')->orderBy('comments_count')->paginate(10);
+    			return Article::with('user','comments','category')->withCount('comments')->orderBy('comments_count')->paginate(10);
     		break;
     		case 'comments_desc':
-    			return Article::withCount('comments')->orderByDesc('comments_count')->paginate(10);
+    			return Article::with('user','comments','category')->withCount('comments')->orderByDesc('comments_count')->paginate(10);
     		break;
     		default:
-    			return Article::paginate(10);
+    			return Article::with('user','comments','category')->paginate(10);
     		break;
     	}
     }

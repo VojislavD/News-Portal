@@ -32,7 +32,7 @@ class LatestComments extends Component
     public function render()
     {
         return view('livewire.latest-comments', [
-        	'comments' => Comment::paginate(10)
+        	'comments' => Comment::with('article')->paginate(10)
         ]);
     }
 }
