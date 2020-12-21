@@ -24,7 +24,7 @@ class ArticleController extends Controller
     {
         $article->checkUniqueView() ? $article->increment('views') : '';
 
-        $recommendedArticles = Article::where('category_id', $article->category_id)->where('id', '!=', $article->id)->latest()->take(4)->get();
+        $recommendedArticles = Article::with('comments')->where('category_id', $article->category_id)->where('id', '!=', $article->id)->latest()->take(4)->get();
 
     	return view('article', [
     		'article' => $article,
@@ -41,7 +41,7 @@ class ArticleController extends Controller
 
     public function latest()
     {
-        $articles = Article::latest()->get();
+        $articles = Article::with('user', 'category')->latest()->get();
 
         return view('latest',[
             'articles' => $articles
@@ -50,7 +50,7 @@ class ArticleController extends Controller
 
     public function trending()
     {
-        $articles = Article::orderBy('views')->get();
+        $articles = Article::with('user', 'category')->orderBy('views')->get();
 
         return view('trending',[
             'mostPopularArticles' => $articles->take(5),

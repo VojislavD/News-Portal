@@ -15,7 +15,7 @@ class FourthLayout extends Component
      */
     public function __construct()
     {
-        $this->articles = Article::latest()->take(4)->get();
+        $this->articles = Article::with('user', 'comments')->latest()->take(4)->get();
     }
 
     /**

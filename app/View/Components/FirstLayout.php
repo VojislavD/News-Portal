@@ -16,7 +16,7 @@ class FirstLayout extends Component
      */
     public function __construct()
     {
-        $articles = Article::latest()->take(5)->get();
+        $articles = Article::with('category', 'user')->latest()->take(5)->get();
 
         $this->mostPopularArticles = $articles->take(2);
         $this->popularArticles = $articles->take(-3);

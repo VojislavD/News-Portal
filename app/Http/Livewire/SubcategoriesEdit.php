@@ -34,7 +34,7 @@ class SubcategoriesEdit extends Component
     public function render()
     {
         return view('livewire.subcategories-edit', [
-        	'subcategories' => Subcategory::where('category_id', $this->category->id)->get()
+        	'subcategories' => Subcategory::with('category')->where('category_id', $this->category->id)->get()
         ]);
     }
 }

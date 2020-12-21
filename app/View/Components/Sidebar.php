@@ -19,14 +19,14 @@ class Sidebar extends Component
      */
     public function __construct()
     {
-        $this->latest = Article::latest()->take(5)->get();
-        $this->trending = Article::orderByDesc('views')->take(5)->get();
+        $this->latest = Article::with('comments')->latest()->take(5)->get();
+        $this->trending = Article::with('comments')->orderByDesc('views')->take(5)->get();
         $this->comments = $this->getArticlesByCommentsCount();
     }
 
     private function getArticlesByCommentsCount()
     {
-        $commentsByCount = Comment::where('status',1)->get()->groupBy('article_id')->sortByDesc(function($item) {
+        $commentsByCount = Comment::with('article')->where('status',1)->get()->groupBy('article_id')->sortByDesc(function($item) {
             return $item->count();
         })->take(5);
         $articlesByCommentsCount = collect();

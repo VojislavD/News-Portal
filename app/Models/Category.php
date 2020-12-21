@@ -24,6 +24,6 @@ class Category extends Model
 
     public static function getActiveCategories()
     {
-        return Category::where('name','!=','uncategorized')->get();
+        return Category::with('subcategories')->where('name','!=','uncategorized')->get();
     }
 }

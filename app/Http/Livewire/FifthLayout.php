@@ -17,7 +17,7 @@ class FifthLayout extends Component
     public function render()
     {
         return view('livewire.fifth-layout', [
-        	'articles' => Article::take($this->amount)->get()
+        	'articles' => Article::with('user', 'comments')->take($this->amount)->get()
         ]);
     }
 }
