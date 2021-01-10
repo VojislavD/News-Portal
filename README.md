@@ -2,5 +2,5 @@
 
 ## Demo
 
-Demo of the app: https://v-news-demo.herokuapp.com/
+The application is still in development, currently demo: https://v-news-demo.herokuapp.com/
 
